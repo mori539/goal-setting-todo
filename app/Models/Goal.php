@@ -19,6 +19,7 @@ class Goal extends Model
     protected $casts = [
         'due_at' => 'datetime',
          'completed_at' => 'datetime',
+         'created_at' => 'datetime',
     ];
 
     // リレーション：目標は一人のユーザーに所属する
