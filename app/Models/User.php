@@ -57,4 +57,16 @@ class User extends Authenticatable // implements MustVerifyEmail
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    // リレーション：ユーザーはたくさんの目標を持つ
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
+
+    // リレーション：ユーザーはたくさんのメインタスクを持つ
+    public function mainTasks()
+    {
+        return $this->hasMany(MainTask::class);
+    }
 }
