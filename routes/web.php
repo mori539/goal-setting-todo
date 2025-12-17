@@ -1,8 +1,9 @@
 <?php
 
 use Livewire\Volt\Volt;
-use App\Livewire\Goals\Index;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Goals\Index as GoalsIndex;
+use App\Livewire\MainTasks\Index as MainTasksIndex;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,7 +20,11 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::get('/goals', Index::class)->name('goals.index');
+    // 目標一覧画面
+    Route::get('/goals', GoalsIndex::class)->name('goals.index');
+
+    // メインタスク一覧画面 {goal} はidが動的に入る。
+    Route::get('/goals/{goal}/main-tasks', MainTasksIndex::class)->name('goals.main-tasks');
 });
 
 require __DIR__.'/auth.php';

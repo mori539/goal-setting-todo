@@ -16,8 +16,8 @@ class GoalItem extends Component
     #[Validate('required|string|max:255')]
     public string $editingTitle;
 
-    // 期限日編集用プロパテ
-    #[Validate('nullable|date')]
+    // 期限日編集用プロパティ
+    #[Validate('nullable|date|after:yesterday')]
     public string $editingDueAt = '';
 
     // 初期化処理

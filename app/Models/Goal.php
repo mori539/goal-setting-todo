@@ -18,8 +18,8 @@ class Goal extends Model
 
     protected $casts = [
         'due_at' => 'datetime',
-         'completed_at' => 'datetime',
-         'created_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     // リレーション：目標は一人のユーザーに所属する
@@ -32,5 +32,23 @@ class Goal extends Model
     public function mainTasks()
     {
         return $this->hasMany(MainTask::class);
+    }
+
+    // $goal->progress で進捗率(0~100)が取れるようにする
+    public function getProgressAttribute(): int
+    {
+        // メインタスクの総数
+        $total = $this->mainTasks->count();
+
+        // タスクが0個なら0%
+        if ($total === 0) {
+            return 0;
+        }
+
+        // 完了しているタスクの数
+        $completed = $this->mainTasks->whereNotNull('completed_at')->count();
+
+        // パーセント計算 (四捨五入)
+        return round(($completed / $total) * 100);
     }
 }

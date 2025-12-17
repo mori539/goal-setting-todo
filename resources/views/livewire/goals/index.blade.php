@@ -26,8 +26,8 @@
             <form wire:submit="store" class="pt-4 space-y-4">
 
                 {{-- 目標タイトル --}}
-                <label class="form-control w-full">
-                    <div class="label pt-0">
+                <div class="form-control w-full">
+                    <div>
                         <span class="label-text font-medium text-gray-700">目標タイトル</span>
                     </div>
                     <input
@@ -37,20 +37,20 @@
                         class="input input-bordered w-full"
                     />
                     @error('newTitle') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                </label>
+                </div>
 
                 {{-- 期限 --}}
-                <label class="form-control w-full">
-                    <div class="label">
+                <div class="form-control w-full">
+                    <div>
                         <span class="label-text font-medium text-gray-700">期限（任意）</span>
                     </div>
                     <input
                         wire:model="newDueAt"
                         type="date"
-                        class="input input-bordered w-full"
+                        class="input input-bordered w-1/3"
                     />
                     @error('newDueAt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                </label>
+                </div>
 
                 {{-- 作成ボタン --}}
                 <div class="flex justify-end">
@@ -67,5 +67,9 @@
         @foreach($goals as $goal)
             <livewire:goals.goal-item :goal="$goal" wire:key="goal-item-{{ $goal->id }}" />
         @endforeach
+    </div>
+
+    <div class="mt-[20px]">
+        {{ $goals->links() }}
     </div>
 </div>

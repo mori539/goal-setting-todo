@@ -16,6 +16,11 @@ class SubTask extends Model
         'completed_at',
     ];
 
+    protected $casts = [
+        'completed_at' => 'datetime',
+        'created_at' => 'datetime',
+    ];
+
     // リレーション：サブタスクはあるメインタスクに所属する
     public function mainTask()
     {

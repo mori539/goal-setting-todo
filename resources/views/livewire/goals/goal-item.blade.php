@@ -10,7 +10,7 @@
             type="checkbox"
             wire:click="toggleCompletion"
             @checked($goal->completed_at)
-            class="checkbox checkbox-success checkbox-md rounded-full mt-1 border-2 border-gray-400"
+            class="checkbox checkbox-success checkbox-md rounded-full border-2 border-gray-400"
         />
 
         {{-- 真ん中のエリア（目標タイトル・日付） --}}
@@ -83,27 +83,74 @@
             </div>
         </div>
 
-        {{-- ④ 削除ボタン --}}
-        {{-- btn-ghost btn-circle で丸いホバーエフェクト付きボタンに --}}
-        <button
-            wire:click="delete"
-            wire:confirm="『{{ $goal->title }}』を削除しますか？"
-            class="btn btn-ghost btn-circle btn-xs text-gray-400 hover:text-error hover:bg-red-50"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-            </svg>
-        </button>
+        {{-- ボタンエリア --}}
+        <div class="flex items-center gap-2 ml-4 flex-shrink-0">
+
+            {{-- ▼▼▼ 詳細画面への遷移ボタン ▼▼▼ --}}
+            {{-- wire:navigate をつけると、SPAのように高速に画面遷移する --}}
+            <a
+                href="{{ route('goals.main-tasks', $goal) }}"
+                wire:navigate
+                class="btn btn-ghost btn-circle btn-xs text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+                title="詳細・タスク管理へ"
+            >
+                {{-- 右矢印アイコン --}}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+
+            {{-- ④ 削除ボタン --}}
+            {{-- btn-ghost btn-circle で丸いホバーエフェクト付きボタンに --}}
+            <button
+                wire:click="delete"
+                wire:confirm="『{{ $goal->title }}』を削除しますか？"
+                class="btn btn-ghost btn-circle btn-xs text-gray-400 hover:text-error hover:bg-red-50"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>
+            </button>
+        </div>
     </div>
 
-    {{-- ⑤ 進捗バー --}}
-    {{-- 複雑なdiv構成をやめて progress コンポーネントを使用 --}}
-    <div class="w-5/6 mt-3 flex items-center gap-2">
-        <progress
-            class="progress progress-success w-full bg-gray-200"
-            value="0"
-            max="100">
-        </progress>
-        <span class="text-xs font-bold text-gray-600 whitespace-nowrap">0% 完了</span>
-    </div>
+        {{-- 進捗バー（目標の全体進捗） --}}
+        @php
+            // 進捗率を取得
+            $progress = $goal->progress;
+
+            // 色の決定ロジック（daisyUIのクラスを切り替え）
+            // 0-34%: warning (オレンジ/黄色系)
+            // 35-74%: info (青系) ※ワイヤーでは黄色ですが、daisyUI標準色だとinfoかaccentが見やすいかも
+            // 75-100%: success (緑)
+            $colorClass = match(true) {
+                $progress < 35 => 'bg-warning',
+                $progress < 75 => 'bg-info',
+                default => 'bg-success',
+            };
+
+            // テキストの色も合わせる
+            $textColorClass = match(true) {
+                $progress < 35 => 'text-orange-500',
+                $progress < 75 => 'text-blue-500',
+                default => 'text-green-600',
+            };
+        @endphp
+
+        <div class="mt-3 px-1">
+            {{-- <progress> ではなく 2つのdivで実装 --}}
+            <div class="flex items-center gap-2 w-9/10">
+                <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
+                    <div
+                        class="h-full rounded-full transition-all duration-500 ease-out {{ $colorClass }}"
+                        style="width: {{ $progress }}%"
+                    ></div>
+                </div>
+                {{-- 数字表示（お好みで） --}}
+                <span class="text-[12px] font-bold whitespace-nowrap {{ $textColorClass }} w-8 text-right">
+                    {{ $progress }}%完了
+                </span>
+            </div>
+        </div>
+
 </div>
