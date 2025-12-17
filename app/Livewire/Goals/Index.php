@@ -7,6 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Goal;
+use Livewire\Attributes\On;
 
 class Index extends Component
 {
@@ -52,6 +53,13 @@ class Index extends Component
         if (!$this->isCreating) {
             $this->reset(['newTitle', 'newDueAt']);
         }
+    }
+
+    // GoalItemコンポーネントで削除が行われたら実行されるリスナー
+    #[On('goal-deleted')]
+    public function refreshGoalsList()
+    {
+        // コンポーネントが再レンダリングされ、最新のリストが表示される。
     }
 
     // 表示
