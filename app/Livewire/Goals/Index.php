@@ -138,7 +138,8 @@ class Index extends Component
         }
 
         // 4. データ取得（ページネーション付き）
-        $goals = $query->paginate(10);
+        // withを使うことで目標に紐づくメインタスクもすべて取得する
+        $goals = $query->with('mainTasks')->paginate(10);
 
         return view('livewire.goals.index', [
             'goals' => $goals,

@@ -151,7 +151,8 @@ class Index extends Component
         }
 
         // 4. データ取得
-        $mainTasks = $query->paginate(50);
+        // // withを使うことで目標に紐づくサブタスクもすべて取得する
+        $mainTasks = $query->with('subTasks')->paginate(50);
 
         return view('livewire.main-tasks.index', [
             'mainTasks' => $mainTasks,
