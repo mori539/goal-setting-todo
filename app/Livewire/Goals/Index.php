@@ -86,15 +86,6 @@ class Index extends Component
     // 表示
     public function render()
     {
-        // /** @var \App\Models\User $user */
-        // $user = Auth::user();
-
-        // // ログインユーザーの目標を、作成日が新しい順に20件のページネーションで取得
-        // $goals = $user->goals()->orderBy('created_at', 'desc')->paginate(20);
-
-        // return view('livewire.goals.index', [
-        //     'goals' => $goals,
-        // ]);
 
         // 1. クエリの準備（まだgetしない）
         $query = Goal::query()

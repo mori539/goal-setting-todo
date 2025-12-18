@@ -11,7 +11,7 @@
 
                 {{-- ① 左側：ロゴとタイトル --}}
                 <div class="flex-1">
-                    <a href="{{ route('goals.index') }}" class="btn btn-ghost text-xl font-bold gap-2">
+                    <a href="{{ route('goals.index') }}" class="btn btn-ghost text-2xl font-bold gap-2 rounded-3xl">
                         {{-- ロゴアイコン --}}
                         <svg width="30" height="30" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -28,7 +28,7 @@
                             <path d="M45 160 H85 V125 H125 V90 H165" stroke="white" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M165 30 L172 50 L193 50 L176 62 L183 82 L165 70 L147 82 L154 62 L137 50 L158 50 Z" fill="url(#starGradient)" />
                         </svg>
-                        Goal Setting Todo
+                        <span class="font-mono text-sky-800 pl-2">Goal Setting Todo</span>
                     </a>
                 </div>
 

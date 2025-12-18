@@ -14,7 +14,8 @@
             </div>
 
             {{-- 目標タイトルヘッダー --}}
-            <div class="border-b border-gray-200 pb-4 mb-8">
+            <div class="bg-amber-50 border rounded-xl border-gray-200 p-4 mb-4">
+                <p class="text-sm text-gray-700">目標：</p>
                 <h2 class="text-xl font-bold text-gray-800">{{ $goal->title }}</h2>
                 <div class="mt-2 flex items-center gap-4 text-xs text-gray-500">
                     <x-date-label label="期限" :date="$goal->due_at" />
@@ -61,7 +62,7 @@
             </div>
 
             {{-- ▼▼▼ メインタスク追加フォーム（アコーディオン） ▼▼▼ --}}
-            <div class="collapse collapse-arrow border border-blue-200 bg-blue-50 mb-8 rounded-lg overflow-hidden {{ $isCreating ? 'collapse-open' : '' }}">
+            <div class="collapse collapse-arrow border border-blue-200 bg-blue-50 mb-10 rounded-lg overflow-hidden {{ $isCreating ? 'collapse-open' : '' }}">
 
                 <div
                     wire:click="toggleCreateForm"

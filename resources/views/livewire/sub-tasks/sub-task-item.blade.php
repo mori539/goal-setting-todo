@@ -39,12 +39,12 @@
             <div
                 x-show="!isEditingSubTaskMemo"
                 @click="isEditingSubTaskMemo = true; $nextTick(() => $refs.memoInput.focus())"
-                class="text-xs text-gray-500 hover:bg-gray-50 rounded pl-5 -ml-1 cursor-text min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
+                class="text-xs text-gray-800 hover:bg-gray-50 rounded pl-5 -ml-1 cursor-text min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
             >
                 @if($subTask->memo)
                     {!! nl2br(e($subTask->memo)) !!}
                 @else
-                    <span class="opacity-0 hover:opacity-100 text-gray-300">メモを入力...</span>
+                    <span class="opacity-0 hover:opacity-100 text-gray-800">メモを入力...</span>
                 @endif
             </div>
             <textarea

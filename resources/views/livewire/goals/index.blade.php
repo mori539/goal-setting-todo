@@ -33,7 +33,7 @@
             {{-- collapse: アコーディオンの基本クラス --}}
             {{-- collapse-arrow: 右端に自動で矢印アイコンを追加・回転してくれる --}}
             {{-- collapse-open: Livewireのフラグがtrueの時だけ強制的に開く --}}
-            <div class="collapse collapse-arrow border border-blue-200 bg-blue-50 mb-8 rounded-lg overflow-hidden {{ $isCreating ? 'collapse-open' : '' }}">
+            <div class="collapse collapse-arrow border border-blue-200 bg-blue-50 mb-10 rounded-lg overflow-hidden {{ $isCreating ? 'collapse-open' : '' }}">
 
                 {{-- トリガー部分 --}}
                 {{-- collapse-title: この領域がクリック可能なヘッダー --}}
