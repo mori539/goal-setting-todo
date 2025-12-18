@@ -8,6 +8,6 @@
         $carbonDate = is_string($date) ? \Carbon\Carbon::parse($date) : $date;
     @endphp
 
-    <span {{ $attributes->merge(['class' => 'inline-block w-[100px] mx-[5px]']) }}>
+    <span {{ $attributes->merge(['class' => 'inline-block w-[110px] mx-[5px]']) }}>
         {{ $label }}: {{ optional($carbonDate)->format('Y-m-d') }}
     </span>

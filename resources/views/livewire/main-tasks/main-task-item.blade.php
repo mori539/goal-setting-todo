@@ -82,7 +82,7 @@
             {{-- ③ 日付情報 --}}
             <div class="text-xs text-gray-500 flex flex-wrap gap-2 items-center mt-1">
                 <x-date-label label="作成" :date="$task->created_at" />
-                <div class="inline-block w-[100px] mx-[5px]">
+                <div class="inline-block w-[110px] mx-[5px]">
                     <span class="text-gray-500">期限:</span>
                     <span
                         x-show="!isEditingDate"
