@@ -72,6 +72,8 @@ class MainTaskItem extends Component
     {
         $this->task->delete();
         $this->dispatch('task-updated'); // 削除時も進捗が変わるので通知
+
+        $this->dispatch('notify', message: 'タスクを削除しました', type: 'del_success');
     }
 
     public function render()
@@ -92,6 +94,7 @@ class MainTaskItem extends Component
 
         $this->reset('newSubTaskTitle');
         $this->dispatch('subtask-updated'); // 進捗計算のために自分自身に通知
+        $this->dispatch('notify', message: 'サブタスクを追加しました');
     }
 
     // SubTaskItemコンポーネントで更新・削除が行われたら実行されるリスナー

@@ -45,9 +45,6 @@ class GoalItem extends Component
 
         // DB更新
         $this->goal->update(['title' => $this->editingTitle]);
-
-        // オプション: 更新完了のトースト通知などを出すならここでdispatch
-        // $this->dispatch('notify', 'タイトルを更新しました');
     }
 
     // 編集キャンセル時のリセット処理（ESCキー用）
@@ -92,6 +89,8 @@ class GoalItem extends Component
 
         // 親コンポーネント(Goals\Index)に削除されたことを通知してリストを更新させる
         $this->dispatch('goal-deleted');
+
+        $this->dispatch('notify', message: '目標を削除しました', type: 'del_success');
     }
 
     // 表示

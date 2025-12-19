@@ -82,6 +82,9 @@
             {{ $slot }}
         </main>
 
+        {{-- トースト通知 --}}
+        <x-toast />
+
         @fluxScripts
     </body>
 </html>

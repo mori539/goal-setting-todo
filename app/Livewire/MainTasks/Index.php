@@ -84,7 +84,7 @@ class Index extends Component
 
         $this->reset(['newTitle', 'newMemo', 'newDueAt']);
 
-        session()->flash('status', 'メインタスクを作成しました！');
+        $this->dispatch('notify', message: 'タスクを追加しました');
     }
 
     public function render()

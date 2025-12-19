@@ -55,6 +55,7 @@ class SubTaskItem extends Component
     {
         $this->subTask->delete();
         $this->dispatch('subtask-updated');
+        $this->dispatch('notify', message: 'サブタスクを削除しました', type: 'del_success');
     }
 
     public function render()

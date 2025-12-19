@@ -62,7 +62,7 @@ class Index extends Component
         $this->reset(['newTitle', 'newDueAt', 'isCreating']);
 
         // オプション: 完了メッセージなどのFlash通知
-        session()->flash('status', '目標を作成しました！');
+        $this->dispatch('notify', message: '目標を追加しました');
     }
 
     // フォームの開閉トグル
