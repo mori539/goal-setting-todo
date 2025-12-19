@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
     </head>
     <body class="min-h-screen bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 antialiased">
 
@@ -86,5 +87,8 @@
         <x-toast />
 
         @fluxScripts
+
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/ja.js"></script>
     </body>
 </html>

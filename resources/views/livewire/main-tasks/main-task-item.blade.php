@@ -40,7 +40,7 @@
                     @keydown.enter.prevent="$event.target.blur()"
                     @keydown.escape.prevent="isEditingTitle = false; $wire.editingTitle = '{{ $task->title }}'"
                     type="text"
-                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-none h-auto"
+                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-sm h-auto"
                 />
             </div>
             @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
@@ -57,7 +57,7 @@
                             {!! nl2br(e($task->memo)) !!}
                         </p>
                     @else
-                        <div class="text-xs text-gray-500 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                        <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -82,31 +82,28 @@
             {{-- ③ 日付情報 --}}
             <div class="text-xs text-gray-500 flex flex-wrap gap-2 items-center mt-1">
                 <x-date-label label="作成" :date="$task->created_at" />
-                <div class="inline-block w-[110px] mx-[5px]">
-                    <span class="text-gray-500">期限:</span>
-                    <span
-                        x-show="!isEditingDate"
-                        @click="isEditingDate = true; $nextTick(() => $refs.dateInput.showPicker())"
-                        class="cursor-pointer hover:bg-yellow-200 hover:text-gray-700 px-1 rounded transition-colors"
-                    >
-                        @if($task->due_at)
-                            {{ $task->due_at->format('Y-m-d') }}
-                        @else
-                            <span class="text-gray-400 opacity-50">---</span>
-                        @endif
-                    </span>
-                    <input
-                        x-show="isEditingDate"
-                        x-cloak
-                        x-ref="dateInput"
-                        type="date"
-                        wire:model="editingDueAt"
-                        wire:change="updateDueAt"
-                        @change="isEditingDate = false"
-                        @click.outside="isEditingDate = false"
-                        class="input input-bordered input-xs h-6 w-[110px] px-1 bg-white"
-                    />
+
+                {{-- 期限日時 --}}
+                {{-- ▼ inline-block をやめて flex に変更。items-center で「期限:」と「日付」の高さを揃えます --}}
+                <div class="flex items-center gap-1">
+                    <span class="text-gray-500 shrink-0">期限:</span> {{-- shrink-0: 縮こまらないように固定 --}}
+
+                    <div class="w-[85px]"> {{-- 幅を少し調整 --}}
+                        <x-date-picker
+                            wire:model.live="editingDueAt"
+                            placeholder="---"
+                            {{--
+                                ▼ ポイント:
+                                1. h-[15px] → h-5 (20px): text-xs の行の高さに合わせる
+                                2. text-xs: 文字サイズを周りと合わせる
+                                3. p-0: 余計なパディングを消して文字位置を安定させる
+                                4. leading-none: 行間を詰めて垂直位置を合わせやすくする
+                            --}}
+                            class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full"
+                        />
+                    </div>
                 </div>
+
                 <x-date-label label="完了" :date="$task->completed_at" />
             </div>
         </div>
@@ -198,7 +195,7 @@
             @click="isEditingSubTask = true; $nextTick(() => $refs.subTaskInput.focus())"
             class="cursor-text group min-h-[1.5rem] mt-2"
         >
-            <div class="text-xs text-gray-400 flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity p-1">
+            <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -215,7 +212,7 @@
             @blur="isEditingSubTask = false"
             type="text"
             placeholder="サブタスクを追加 (Enterで保存)"
-            class="input input-xs input-bordered w-full"
+            class="input input-sm input-bordered w-full"
         />
     </div>
 </div>

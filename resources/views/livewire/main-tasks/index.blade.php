@@ -86,7 +86,9 @@
                         {{-- 期限 --}}
                         <div class="form-control w-full">
                             <div><span class="label-text font-medium text-gray-700">期限（任意）</span></div>
-                            <input wire:model="newDueAt" type="date" class="input input-bordered w-1/3" />
+                            <div class="w-[200px]">
+                                <x-date-picker wire:model="newDueAt" />
+                            </div>
                             @error('newDueAt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                         </div>
 

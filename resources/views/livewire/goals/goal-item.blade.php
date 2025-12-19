@@ -49,34 +49,24 @@
                 <x-date-label label="作成" :date="$goal->created_at" />
 
                 {{-- 期限日時 --}}
-                <div class="relative flex items-center gap-1">
-                    <span class="text-gray-500">期限:</span>
+                {{-- ▼ inline-block をやめて flex に変更。items-center で「期限:」と「日付」の高さを揃えます --}}
+                <div class="flex items-center gap-1">
+                    <span class="text-gray-500 shrink-0">期限:</span> {{-- shrink-0: 縮こまらないように固定 --}}
 
-                    {{-- 表示モード --}}
-                    <span
-                        x-show="!isEditingDate"
-                        @click="isEditingDate = true; $nextTick(() => $refs.dateInput.showPicker())"
-                        class="cursor-pointer hover:bg-yellow-200 hover:text-gray-700 px-1 rounded transition-colors"
-                    >
-                        @if($goal->due_at)
-                            {{ $goal->due_at->format('Y-m-d') }}
-                        @else
-                            <span class="text-gray-400 opacity-50">---</span>
-                        @endif
-                    </span>
-
-                    {{-- 編集モード --}}
-                    <input
-                        x-show="isEditingDate"
-                        x-cloak
-                        x-ref="dateInput"
-                        type="date"
-                        wire:model="editingDueAt"
-                        wire:change="updateDueAt"
-                        @change="isEditingDate = false"
-                        @click.outside="isEditingDate = false"
-                        class="input input-bordered input-xs h-6 w-[110px] px-1 bg-white"
-                    />
+                    <div class="w-[85px]"> {{-- 幅を少し調整 --}}
+                        <x-date-picker
+                            wire:model.live="editingDueAt"
+                            placeholder="---"
+                            {{--
+                                ▼ ポイント:
+                                1. h-[15px] → h-5 (20px): text-xs の行の高さに合わせる
+                                2. text-xs: 文字サイズを周りと合わせる
+                                3. p-0: 余計なパディングを消して文字位置を安定させる
+                                4. leading-none: 行間を詰めて垂直位置を合わせやすくする
+                            --}}
+                            class="bg-yellow-50 input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full"
+                        />
+                    </div>
                 </div>
 
                 <x-date-label label="完了" :date="$goal->completed_at" />

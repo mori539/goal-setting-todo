@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\MainTask;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
+use Illuminate\Validation\ValidationException;
 
 class MainTaskItem extends Component
 {
@@ -48,10 +49,34 @@ class MainTaskItem extends Component
     }
 
     // 期限日更新
-    public function updateDueAt()
+    public function updatedEditingDueAt()
     {
-        $this->validateOnly('editingDueAt');
-        $this->task->update(['due_at' => $this->editingDueAt ?: null]);
+        try{
+            $this->validateOnly('editingDueAt');
+            $this->task->update(['due_at' => $this->editingDueAt ?: null]);
+
+            // blade側に更新成功の合図を送る
+            $this->dispatch('task-updated');
+
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: '期限日を更新しました');
+
+            // blade側にフォーカスを外す合図を送る
+            $this->dispatch('blur-picker');
+
+        } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで更新失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+            // input要素の日付をもとの日付に戻す
+            // Null回避もしておく
+            $this->editingDueAt = $this->task->due_at ? $this->task->due_at->format('Y-m-d') : '';
+
+        }
     }
 
     // 完了切り替え
@@ -73,7 +98,7 @@ class MainTaskItem extends Component
         $this->task->delete();
         $this->dispatch('task-updated'); // 削除時も進捗が変わるので通知
 
-        $this->dispatch('notify', message: 'タスクを削除しました', type: 'del_success');
+        $this->dispatch('notify', message: 'タスクを削除しました');
     }
 
     public function render()

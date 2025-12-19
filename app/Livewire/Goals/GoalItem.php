@@ -3,9 +3,12 @@
 
 namespace App\Livewire\Goals;
 
-use Livewire\Component;
 use App\Models\Goal;
+use Livewire\Component;
 use Livewire\Attributes\Validate;
+use Illuminate\Validation\ValidationException;
+
+use function PHPSTORM_META\type;
 
 class GoalItem extends Component
 {
@@ -54,14 +57,39 @@ class GoalItem extends Component
     }
 
     // 期限日の更新処理（フォーカスが外れた時などに実行）
-    public function updateDueAt()
+    public function updatedEditingDueAt()
     {
-        $this->validateOnly('editingDueAt');
+        try{
+            $this->validateOnly('editingDueAt');
 
-        // 空文字なら NULL に変換して保存
-        $dueAt = $this->editingDueAt === '' ? null : $this->editingDueAt;
+            // 空文字なら NULL に変換して保存
+            $dueAt = $this->editingDueAt === '' ? null : $this->editingDueAt;
 
-        $this->goal->update(['due_at' => $dueAt]);
+            // 更新処理
+            $this->goal->update(['due_at' => $dueAt]);
+
+            // blade側に更新成功の合図を送る
+            $this->dispatch('goal-updated');
+
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: '期限日を更新しました');
+
+            // blade側にフォーカスを外す合図を送る
+            $this->dispatch('blur-picker');
+
+        } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで更新失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+            // input要素の日付をもとの日付に戻す
+            // Null回避もしておく
+            $this->editingDueAt = $this->goal->due_at ? $this->goal->due_at->format('Y-m-d') : '';
+
+        }
     }
 
     // 編集キャンセル時のリセット処理（ESCキー用）
@@ -90,7 +118,7 @@ class GoalItem extends Component
         // 親コンポーネント(Goals\Index)に削除されたことを通知してリストを更新させる
         $this->dispatch('goal-deleted');
 
-        $this->dispatch('notify', message: '目標を削除しました', type: 'del_success');
+        $this->dispatch('notify', message: '目標を削除しました');
     }
 
     // 表示
