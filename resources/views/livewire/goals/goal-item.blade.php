@@ -39,7 +39,7 @@
                     @keydown.enter.prevent="$event.target.blur()"
                     @keydown.escape.prevent="isEditing = false; $wire.resetTitle()"
                     type="text"
-                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 h-auto focus:bg-white"
+                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 h-auto focus:bg-white focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
             </div>
             @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
@@ -64,7 +64,7 @@
                                 3. p-0: 余計なパディングを消して文字位置を安定させる
                                 4. leading-none: 行間を詰めて垂直位置を合わせやすくする
                             --}}
-                            class="bg-yellow-50 input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full"
+                            class="bg-yellow-50 input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                         />
                     </div>
                 </div>

@@ -40,7 +40,7 @@
                     @keydown.enter.prevent="$event.target.blur()"
                     @keydown.escape.prevent="isEditingTitle = false; $wire.editingTitle = '{{ $task->title }}'"
                     type="text"
-                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-sm h-auto"
+                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-sm h-auto focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
             </div>
             @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
@@ -55,6 +55,7 @@
                     @if($task->memo)
                         <p class="text-sm text-gray-700 bg-gray-50 p-2 rounded hover:bg-gray-100 transition-colors {{ $task->completed_at ? 'opacity-50' : '' }}">
                             {!! nl2br(e($task->memo)) !!}
+
                         </p>
                     @else
                         <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
@@ -73,7 +74,7 @@
                     wire:blur="updateMemo"
                     @blur="isEditingMemo = false"
                     @keydown.escape.prevent="isEditingMemo = false; $wire.editingMemo = '{{ $task->memo }}'"
-                    class="textarea textarea-bordered textarea-sm w-full h-24 text-sm leading-normal"
+                    class="textarea textarea-bordered textarea-sm w-full h-24 text-sm leading-normal focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                     placeholder="メモを入力..."
                 ></textarea>
             </div>
@@ -99,7 +100,7 @@
                                 3. p-0: 余計なパディングを消して文字位置を安定させる
                                 4. leading-none: 行間を詰めて垂直位置を合わせやすくする
                             --}}
-                            class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full"
+                            class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-gray-100 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                         />
                     </div>
                 </div>
@@ -212,7 +213,7 @@
             @blur="isEditingSubTask = false"
             type="text"
             placeholder="サブタスクを追加 (Enterで保存)"
-            class="input input-sm input-bordered w-full"
+            class="input input-sm input-bordered w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
         />
     </div>
 </div>

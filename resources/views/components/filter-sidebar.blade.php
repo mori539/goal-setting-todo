@@ -8,7 +8,9 @@
     {{-- ▼▼▼▼▼ エリア1: 目標検索 & フィルター ▼▼▼▼▼ --}}
     <div class="bg-base-100 rounded-box p-4 shadow-sm border border-gray-200">
 
-        <div class="font-bold text-gray-700 mb-2">目標検索</div>
+            <div class=" border-l-4 border-yellow-500">
+                <h3 class="font-bold mb-2 pl-2">目標検索</h3>
+            </div>
 
         {{-- 目標検索ボックス --}}
         @if($mode === 'goal')
@@ -64,7 +66,9 @@
     @if($mode === 'task')
     <div class="bg-base-100 rounded-box p-4 shadow-sm border border-gray-200">
 
-        <div class="font-bold text-gray-700 mb-2">タスク検索</div>
+        <div class=" border-l-4 border-blue-500">
+            <h3 class="font-bold mb-2 pl-2">タスク検索</h3>
+        </div>
 
         {{-- タスク検索ボックス --}}
         <label class="input input-bordered input-sm flex items-center gap-2 mb-4">

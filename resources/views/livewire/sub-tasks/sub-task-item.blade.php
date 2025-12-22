@@ -29,7 +29,7 @@
                 @blur="isEditingSubTaskTitle = false"
                 @keydown.enter.prevent="$event.target.blur()"
                 type="text"
-                class="input input-xs input-ghost w-full text-sm px-1 -ml-1 h-auto focus:bg-white border-b border-blue-300 rounded-none"
+                class="input input-xs input-ghost w-full text-sm px-1 -ml-1 h-auto focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
             />
         </div>
         @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
@@ -54,7 +54,7 @@
                 wire:model="editingMemo"
                 wire:blur="updateMemo"
                 @blur="isEditingSubTaskMemo = false"
-                class="textarea textarea-bordered textarea-xs w-full h-16 leading-normal"
+                class="textarea textarea-bordered textarea-xs w-full h-16 leading-normal focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 placeholder="サブタスクのメモ"
             ></textarea>
         </div>

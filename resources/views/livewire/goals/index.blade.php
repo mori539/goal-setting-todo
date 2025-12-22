@@ -61,7 +61,7 @@
                                 wire:model="newTitle"
                                 type="text"
                                 placeholder="例：英語の資格を取得する"
-                                class="input input-bordered w-full" />
+                                class="input input-bordered w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded" />
                             @error('newTitle') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                         </div>
 
@@ -71,7 +71,7 @@
                                 <span class="label-text font-medium text-gray-700">期限（任意）</span>
                             </div>
                             <div class="w-[200px]">
-                                <x-date-picker wire:model="newDueAt" />
+                                <x-date-picker class="focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded" wire:model="newDueAt" />
                             </div>
                             @error('newDueAt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                         </div>
