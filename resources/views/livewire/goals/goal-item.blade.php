@@ -3,6 +3,8 @@
     x-data="{ isEditing: false, isEditingDate: false }"
     class="card bg-yellow-50 border border-yellow-200 shadow-sm rounded-lg p-4"
 >
+
+    {{-- 進捗バーよりも上の部分 --}}
     <div class="flex items-start gap-3">
 
         {{-- 完了チェックボックス --}}
@@ -19,7 +21,7 @@
             {{-- 目標タイトル表示エリア --}}
             <div class="relative group">
 
-                {{-- 表示モード --}}
+                {{-- 目標タイトル 表示モード --}}
                 <h3
                     x-show="!isEditing"
                     @click="isEditing = true; $nextTick(() => $refs.titleInput.focus())"
@@ -29,15 +31,16 @@
                     {{ $goal->title }}
                 </h3>
 
-                {{-- 編集モード --}}
+                {{-- 目標タイトル 編集モード --}}
                 <input
-                    x-show="isEditing"
-                    x-cloak
-                    x-ref="titleInput"
-                    wire:model="editingTitle"
-                    wire:blur="updateTitle; isEditing = false"
-                    @keydown.enter.prevent="$event.target.blur()"
-                    @keydown.escape.prevent="isEditing = false; $wire.resetTitle()"
+                    x-show="isEditing"                                                  {{-- 編集フラグがtrueの際にこのinput要素が表示される --}}
+                    x-cloak                                                             {{-- app.cssに定義。display:noneしている --}}
+                    x-ref="titleInput"                                                  {{-- $refs.titleInput.focus()の関係先。 --}}
+                    wire:model="editingTitle"                                           {{-- PHP処理側(に渡す変数値。 --}}
+                    wire:blur="updateTitle;"                                            {{-- フォーカスアウトした際に updateTitle()の処理が実行される --}}
+                    @blur="isEditing = false"                                           {{-- フォーカスアウトした際に編集フラグをオフにする --}}
+                    @keydown.enter.prevent="$event.target.blur()"                       {{-- エンターキーを押した際にフォーカスアウトする --}}
+                    @keydown.escape.prevent="isEditing = false; $wire.resetTitle()"     {{-- Escキーを押した際に編集フラグをオフにし、resetTitle()で目標タイトルをもとに戻す --}}
                     type="text"
                     class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 h-auto focus:bg-white focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
@@ -46,29 +49,26 @@
 
             {{-- 日付ラベル --}}
             <div class="text-xs text-gray-500 flex flex-wrap gap-2 items-center">
+
+                {{-- 作成日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="作成" :date="$goal->created_at" />
 
                 {{-- 期限日時 --}}
-                {{-- ▼ inline-block をやめて flex に変更。items-center で「期限:」と「日付」の高さを揃えます --}}
                 <div class="flex items-center gap-1">
                     <span class="text-gray-500 shrink-0">期限:</span> {{-- shrink-0: 縮こまらないように固定 --}}
 
-                    <div class="w-[85px]"> {{-- 幅を少し調整 --}}
+                    <div class="w-[85px]">
+                        {{-- date-pickerのコンポーネントを使用している --}}
+                        {{-- date-pickerコンポーネントはflatpickerを使用している --}}
                         <x-date-picker
                             wire:model.live="editingDueAt"
                             placeholder="---"
-                            {{--
-                                ▼ ポイント:
-                                1. h-[15px] → h-5 (20px): text-xs の行の高さに合わせる
-                                2. text-xs: 文字サイズを周りと合わせる
-                                3. p-0: 余計なパディングを消して文字位置を安定させる
-                                4. leading-none: 行間を詰めて垂直位置を合わせやすくする
-                            --}}
                             class="bg-yellow-50 input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-yellow-200 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                         />
                     </div>
                 </div>
 
+                {{-- 完了日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="完了" :date="$goal->completed_at" />
             </div>
         </div>
@@ -76,8 +76,8 @@
         {{-- ボタンエリア --}}
         <div class="flex items-center gap-2 ml-4 flex-shrink-0">
 
-            {{-- ▼▼▼ 詳細画面への遷移ボタン ▼▼▼ --}}
-            {{-- wire:navigate をつけると、SPAのように高速に画面遷移する --}}
+            {{-- 詳細画面への遷移ボタン --}}
+            {{-- wire:navigate をつけるとシングルページアプリケーションのように高速に画面遷移する --}}
             <a
                 href="{{ route('goals.main-tasks', $goal) }}"
                 wire:navigate
@@ -90,8 +90,7 @@
                 </svg>
             </a>
 
-            {{-- ④ 削除ボタン --}}
-            {{-- btn-ghost btn-circle で丸いホバーエフェクト付きボタンに --}}
+            {{-- 削除ボタン --}}
             <button
                 wire:click="delete"
                 wire:confirm="『{{ $goal->title }}』を削除しますか？"
@@ -112,7 +111,7 @@
 
             // 色の決定ロジック（daisyUIのクラスを切り替え）
             // 0-34%: warning (オレンジ/黄色系)
-            // 35-74%: info (青系) ※ワイヤーでは黄色ですが、daisyUI標準色だとinfoかaccentが見やすいかも
+            // 35-74%: info (青系)
             // 75-100%: success (緑)
             $colorClass = match(true) {
                 $progress < 35 => 'bg-warning',
@@ -137,7 +136,7 @@
                         style="width: {{ $progress }}%"
                     ></div>
                 </div>
-                {{-- 数字表示（お好みで） --}}
+                {{-- 数字表示 --}}
                 <span class="text-[12px] font-bold whitespace-nowrap {{ $textColorClass }} w-8 text-right">
                     {{ $progress }}%完了
                 </span>

@@ -10,18 +10,22 @@ use Illuminate\Validation\ValidationException;
 
 class MainTaskItem extends Component
 {
+    // 親から受け取るメインタスクモデル
     public MainTask $task;
 
+    // インライン編集用 メインタスクタイトル（バリデーション：必須、文字列、max255まで）
     #[Validate('required|string|max:255')]
     public string $editingTitle;
 
+    // インライン編集用 メモ（バリデーション：NULL許可、文字列、max1000まで）
     #[Validate('nullable|string|max:1000')]
     public string $editingMemo;
 
+    // インライン編集用 期限日時（バリデーション：NULL許可、日付形式、今日以降のみ許可）
     #[Validate('nullable|date|after:yesterday')]
     public string $editingDueAt = '';
 
-
+    //インライン編集用 サブタスクタイトル（バリデーション：必須、文字列、max255まで）
     #[Validate('required|string|max:255')]
     public string $newSubTaskTitle = '';
 
@@ -34,25 +38,58 @@ class MainTaskItem extends Component
         $this->editingDueAt = $task->due_at ? $task->due_at->format('Y-m-d') : '';
     }
 
-    // タイトル更新
+    // メインタスクタイトル更新
     public function updateTitle()
     {
-        $this->validateOnly('editingTitle');
-        $this->task->update(['title' => $this->editingTitle]);
+        try{
+
+            // バリデーション処理
+            $this->validateOnly('editingTitle');
+
+            // タイトルを更新
+            $this->task->update(['title' => $this->editingTitle]);
+
+        } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで更新失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+        }
     }
 
-    // メモ更新
+    // メインタスクメモ更新
     public function updateMemo()
     {
-        $this->validateOnly('editingMemo');
-        $this->task->update(['memo' => $this->editingMemo ?: null]);
+        try{
+
+            // バリデーション処理
+            $this->validateOnly('editingMemo');
+
+            // メインタスク メモ更新
+            $this->task->update(['memo' => $this->editingMemo ?: null]);
+
+         } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで更新失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+        }
     }
 
-    // 期限日更新
+    // 期限日時更新
     public function updatedEditingDueAt()
     {
         try{
+            // バリデーション処理
             $this->validateOnly('editingDueAt');
+
+            // 期限日時更新
             $this->task->update(['due_at' => $this->editingDueAt ?: null]);
 
             // blade側に更新成功の合図を送る
@@ -88,22 +125,53 @@ class MainTaskItem extends Component
             $this->task->update(['completed_at' => now()]);
         }
 
-        // ★重要: 親コンポーネントに進捗再計算を依頼するイベント（後で使います）
+        // 親コンポーネントのblade側に進捗バーの再計算を依頼するイベント
         $this->dispatch('task-updated');
     }
 
     // 削除
     public function delete()
     {
-        $this->task->delete();
-        $this->dispatch('task-updated'); // 削除時も進捗が変わるので通知
+        try{
 
-        $this->dispatch('notify', message: 'タスクを削除しました');
+            // 削除処理
+            $this->task->delete();
+
+            // 削除時も進捗が変わるため、blade側に進捗バーの再計算を依頼
+            $this->dispatch('task-updated');
+
+            // トーストで削除成功の通知をする
+            $this->dispatch('notify', message: 'タスクを削除しました');
+
+        } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで削除失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+        }
     }
 
+    // 表示
     public function render()
     {
         return view('livewire.main-tasks.main-task-item');
+    }
+
+
+    // 編集キャンセル時のリセット処理（ESCキー用）
+    public function resetTitle()
+    {
+        $this->editingTitle = $this->task->title;
+    }
+
+
+    // 編集キャンセル時のリセット処理（ESCキー用）
+    public function reseMemo()
+    {
+        $this->editingMemo = $this->task->memo;
     }
 
 
@@ -111,15 +179,34 @@ class MainTaskItem extends Component
     // サブタスク保存
     public function storeSubTask()
     {
-        $this->validateOnly('newSubTaskTitle');
+        try{
 
-        $this->task->subTasks()->create([
-            'title' => $this->newSubTaskTitle,
-        ]);
+            // バリデーション処理
+            $this->validateOnly('newSubTaskTitle');
 
-        $this->reset('newSubTaskTitle');
-        $this->dispatch('subtask-updated'); // 進捗計算のために自分自身に通知
-        $this->dispatch('notify', message: 'サブタスクを追加しました');
+            // サブタスク保存処理
+            $this->task->subTasks()->create([
+                'title' => $this->newSubTaskTitle,
+            ]);
+
+            // サブタスクタイトルをリセット
+            $this->reset('newSubTaskTitle');
+
+            // blade側に進捗バーの再計算を依頼
+            $this->dispatch('subtask-updated');
+
+            // トーストで作成成功の通知をする
+            $this->dispatch('notify', message: 'サブタスクを追加しました');
+
+         } catch (ValidationException $e) {
+
+            // バリデーターから発生したエラーメッセージの「最初の1つ」を取り出す
+            $errorMessage = $e->validator->errors()->first();
+
+            // トーストで更新失敗の通知をする
+            $this->dispatch('notify', message: $errorMessage, type: 'error');
+
+        }
     }
 
     // SubTaskItemコンポーネントで更新・削除が行われたら実行されるリスナー

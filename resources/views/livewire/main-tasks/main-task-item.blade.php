@@ -1,4 +1,5 @@
 <div
+    {{-- {{-- alpain.jsで使用する変数を定義 --}}
     x-data="{
         isEditingTitle: false,
         isEditingMemo: false,
@@ -8,9 +9,11 @@
     }"
     class="card bg-base-100 border border-gray-200 shadow-sm p-4"
 >
+
+    {{-- 進捗バーよりも上の部分 --}}
     <div class="flex items-start gap-3">
 
-        {{-- ① 完了チェックボックス --}}
+        {{-- 完了チェックボックス --}}
         <input
             type="checkbox"
             wire:click="toggleCompletion"
@@ -21,95 +24,105 @@
         {{-- 真ん中のエリア --}}
         <div class="w-full min-w-0 grid gap-1">
 
-            {{-- ②-A タイトルエリア --}}
+            {{-- メインタスク タイトルエリア --}}
             <div class="relative">
+
+                {{-- メインタスクタイトル 表示モード --}}
                 <h3
-                    x-show="!isEditingTitle"
-                    @click="isEditingTitle = true; $nextTick(() => $refs.titleInput.focus())"
+                    x-show="!isEditingTitle"    {{-- タイトル編集フラグがfalseの際にこのinput要素が表示される --}}
+                    @click="isEditingTitle = true; $nextTick(() => $refs.titleInput.focus())"   {{-- クリックした際にタイトル編集フラグをtrueにする。その後編集モードへ移行。 --}}
                     class="text-lg font-bold text-gray-800 hover:bg-gray-100 rounded px-1 -ml-1 transition-colors break-words cursor-text {{ $task->completed_at ? 'line-through text-gray-400' : '' }}"
                 >
                     {{ $task->title }}
                 </h3>
+
+                {{-- メインタスクタイトル 編集モード --}}
                 <input
-                    x-show="isEditingTitle"
-                    x-cloak
-                    x-ref="titleInput"
-                    wire:model="editingTitle"
-                    wire:blur="updateTitle"
-                    @blur="isEditingTitle = false"
-                    @keydown.enter.prevent="$event.target.blur()"
-                    @keydown.escape.prevent="isEditingTitle = false; $wire.editingTitle = '{{ $task->title }}'"
+                    x-show="isEditingTitle"                                                                             {{-- タイトル編集フラグがtrueの際にこのinput要素が表示される --}}
+                    x-cloak                                                                                             {{-- app.cssに定義。display:noneしている --}}
+                    x-ref="titleInput"                                                                                  {{-- $refs.titleInput.focus()の関係先。 --}}
+                    wire:model="editingTitle"                                                                           {{-- PHP処理側(に渡す変数値。 --}}
+                    wire:blur="updateTitle"                                                                             {{-- フォーカスアウトした際に updateTitle()の処理が実行される --}}
+                    @blur="isEditingTitle = false"                                                                      {{-- フォーカスアウトした際にタイトル編集フラグをオフにする --}}
+                    @keydown.enter.prevent="$event.target.blur()"                                                       {{-- エンターキーを押した際にフォーカスアウトする --}}
+                    @keydown.escape.prevent="isEditingTitle = false; $wire.resetTitle()"                                {{-- Escキーを押した際に編集フラグをオフにし、resetTitle()でメインタスクタイトルをもとに戻す --}}
                     type="text"
                     class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-sm h-auto focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
             </div>
+            {{-- エラー通知 --}}
             @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
 
-            {{-- ②-B メモエリア --}}
+            {{-- メモエリア --}}
             <div class="relative mt-1">
+                {{-- メモ 表示モード --}}
                 <div
-                    x-show="!isEditingMemo"
-                    @click="isEditingMemo = true; $nextTick(() => $refs.memoInput.focus())"
+                    x-show="!isEditingMemo"     {{-- メモ編集フラグがfalseの際にこのinput要素が表示される --}}
+                    @click="isEditingMemo = true; $nextTick(() => $refs.memoInput.focus())"     {{-- クリックした際にタイトル編集フラグをtrueにする。その後編集モードへ移行。 --}}
                     class="cursor-text group min-h-[1.5rem]"
                 >
-                    @if($task->memo)
-                        <p class="text-sm text-gray-700 bg-gray-50 p-2 rounded hover:bg-gray-100 transition-colors {{ $task->completed_at ? 'opacity-50' : '' }}">
-                            {!! nl2br(e($task->memo)) !!}
 
-                        </p>
+
+                    @if($task->memo)
+                    {{-- 保存値がある場合は保存値を表示 --}}
+                    <p class="text-sm text-gray-700 bg-gray-50 p-2 rounded hover:bg-gray-100 transition-colors {{ $task->completed_at ? 'opacity-50' : '' }}">
+                        {!! nl2br(e($task->memo)) !!}
+
+                    </p>
                     @else
-                        <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            メモを追加
-                        </div>
+                    {{-- 保存値がない場合は「+メモを追加」テキストを表示 --}}
+                    <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        メモを追加
+                    </div>
                     @endif
                 </div>
+
+                {{-- メモ 編集モード --}}
                 <textarea
-                    x-show="isEditingMemo"
-                    x-cloak
-                    x-ref="memoInput"
-                    wire:model="editingMemo"
-                    wire:blur="updateMemo"
-                    @blur="isEditingMemo = false"
-                    @keydown.escape.prevent="isEditingMemo = false; $wire.editingMemo = '{{ $task->memo }}'"
+                    x-show="isEditingMemo"                                                                          {{-- メモ編集フラグがtrueの際にこのinput要素が表示される --}}
+                    x-cloak                                                                                         {{-- app.cssに定義。display:noneしている --}}
+                    x-ref="memoInput"                                                                               {{-- $refs.memoInput.focus()の関係先。 --}}
+                    wire:model="editingMemo"                                                                        {{-- PHP処理側に渡す変数値。 --}}
+                    wire:blur="updateMemo"                                                                          {{-- フォーカスアウトした際に updateMemo()の処理が実行される --}}
+                    @blur="isEditingMemo = false"                                                                   {{-- フォーカスアウトした際にメモ編集フラグをオフにする --}}
+                    @keydown.escape.prevent="isEditingMemo = false; $wire.resetMemo()"                              {{-- Escキーを押した際に編集フラグをオフにし、resetMemo()でメモをもとに戻す --}}
                     class="textarea textarea-bordered textarea-sm w-full h-24 text-sm leading-normal focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                     placeholder="メモを入力..."
                 ></textarea>
             </div>
+            {{-- エラー通知 --}}
             @error('editingMemo') <span class="text-error text-xs">{{ $message }}</span> @enderror
 
-            {{-- ③ 日付情報 --}}
+            {{-- 日付情報 --}}
             <div class="text-xs text-gray-500 flex flex-wrap gap-2 items-center mt-1">
+
+                 {{-- 作成日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="作成" :date="$task->created_at" />
 
                 {{-- 期限日時 --}}
-                {{-- ▼ inline-block をやめて flex に変更。items-center で「期限:」と「日付」の高さを揃えます --}}
                 <div class="flex items-center gap-1">
                     <span class="text-gray-500 shrink-0">期限:</span> {{-- shrink-0: 縮こまらないように固定 --}}
 
-                    <div class="w-[85px]"> {{-- 幅を少し調整 --}}
+                    <div class="w-[85px]">
+                        {{-- date-pickerのコンポーネントを使用している --}}
+                        {{-- date-pickerコンポーネントはflatpickerを使用している --}}
                         <x-date-picker
                             wire:model.live="editingDueAt"
                             placeholder="---"
-                            {{--
-                                ▼ ポイント:
-                                1. h-[15px] → h-5 (20px): text-xs の行の高さに合わせる
-                                2. text-xs: 文字サイズを周りと合わせる
-                                3. p-0: 余計なパディングを消して文字位置を安定させる
-                                4. leading-none: 行間を詰めて垂直位置を合わせやすくする
-                            --}}
                             class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-gray-100 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                         />
                     </div>
                 </div>
 
+                 {{-- 完了日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="完了" :date="$task->completed_at" />
             </div>
         </div>
 
-        {{-- ④ 右側アクションエリア --}}
+        {{-- 右側アクションエリア --}}
         <div class="flex flex-col items-center gap-1">
             {{-- 削除ボタン --}}
             <button
@@ -123,10 +136,10 @@
                 </svg>
             </button>
 
-            {{-- ▼▼▼ 追加：サブタスク開閉ボタン ▼▼▼ --}}
+            {{-- サブタスク開閉ボタン --}}
             <div class="relative inline-flex mt-1">
                 <button
-                    @click="showSubTasks = !showSubTasks"
+                    @click="showSubTasks = !showSubTasks"       {{-- クリックでサブタスク開閉フラグを切り替え --}}
                     class="btn btn-ghost btn-circle btn-xs text-gray-400"
                     :class="{'text-blue-500 bg-blue-50': showSubTasks}"
                     title="サブタスクを表示/非表示"
@@ -135,7 +148,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 17.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
                 </button>
-                {{-- バッジ（サブタスクがある時だけ） --}}
+                {{-- バッジ（サブタスクがある時だけサブタスクの件数を表示する） --}}
                 @if($task->subTasks->count() > 0)
                     <span class="absolute -top-1 -right-3 bg-blue-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center pointer-events-none">
                         {{ $task->subTasks->count() }}

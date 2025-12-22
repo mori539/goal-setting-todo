@@ -2,14 +2,16 @@
 
     <div class="flex flex-col md:flex-row gap-6">
 
-        {{-- ▼▼▼ 左サイドバー（フィルターメニュー） ▼▼▼ --}}
+        {{-- サイドバー（フィルターメニュー） --}}
         <x-filter-sidebar mode="goal" :filter="$filter" />
 
-        {{-- ▼▼▼ 右メインコンテンツ ▼▼▼ --}}
+        {{-- メインコンテンツ --}}
         <div class="flex-1">
 
+            {{-- ソート --}}
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h2 class="text-2xl font-bold text-gray-800">
+                    {{-- 動的にタイトル変更する --}}
                     {{ match($filter) {
                     'uncompleted' => '進行中 の目標一覧',
                     'uncompleted_over_due' => '未完了期限切れ の目標一覧',
@@ -29,18 +31,18 @@
             </div>
 
 
-            {{-- ▼▼▼ 目標追加エリア（daisyUIのアコーディオンを使用） ▼▼▼ --}}
+            {{-- 目標追加エリア（daisyUIのアコーディオンを使用） --}}
             {{-- collapse: アコーディオンの基本クラス --}}
             {{-- collapse-arrow: 右端に自動で矢印アイコンを追加・回転してくれる --}}
-            {{-- collapse-open: Livewireのフラグがtrueの時だけ強制的に開く --}}
+            {{-- collapse-open: Livewireの$isCreatingフラグがtrueの時だけ開く --}}
             <div class="collapse collapse-arrow border border-blue-200 bg-blue-50 mb-10 rounded-lg overflow-hidden {{ $isCreating ? 'collapse-open' : '' }}">
 
                 {{-- トリガー部分 --}}
                 {{-- collapse-title: この領域がクリック可能なヘッダー --}}
+                {{-- toggleCreateForm でアコーディオンを手動で閉じたり開いたりの制御をする --}}
                 <div
                     wire:click="toggleCreateForm"
                     class="collapse-title flex items-center gap-2 font-semibold text-gray-700 hover:bg-blue-100 transition-colors cursor-pointer">
-                    {{-- プラスアイコン（左側） --}}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -62,6 +64,7 @@
                                 type="text"
                                 placeholder="例：英語の資格を取得する"
                                 class="input input-bordered w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded" />
+                            {{-- エラー通知 --}}
                             @error('newTitle') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                         </div>
 
@@ -73,6 +76,7 @@
                             <div class="w-[200px]">
                                 <x-date-picker class="focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded" wire:model="newDueAt" />
                             </div>
+                            {{-- エラー通知 --}}
                             @error('newDueAt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                         </div>
 
@@ -89,6 +93,7 @@
             {{-- 目標一覧リスト --}}
             <div class="space-y-4 mt-8">
                 @forelse($goals as $goal)
+                {{-- goal-itemのコンポーネントを呼ぶ --}}
                 <livewire:goals.goal-item :goal="$goal" wire:key="goal-item-{{ $goal->id }}" />
                 @empty
                 {{-- データがない時の表示 --}}
@@ -106,6 +111,7 @@
 
         </div>
 
+        {{-- ページネーション --}}
         <div class="mt-[20px]">
             {{ $goals->links() }}
         </div>

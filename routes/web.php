@@ -8,7 +8,7 @@ use App\Livewire\MainTasks\Index as MainTasksIndex;
 
 
 Route::get('/', function () {
-    // ログイン済みなら、目標一覧へ転送
+    // ログイン済みなら、目標一覧画面へ転送
     if (Auth::check()) {
         return redirect()->route('goals.index');
     }
@@ -27,9 +27,17 @@ Route::middleware(['auth'])->group(function () {
     // Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     // 目標一覧画面
+    // Livewireならではの挙動。クラスを指定するだけで、以下の処理を自動でやってくれる。
+    // 1. コンポーネントの初期化 (mount)
+    // 2. 画面の描画 (render)
+    // 3. レイアウトファイル(app.blade.php)への埋め込み
     Route::get('/goals', GoalsIndex::class)->name('goals.index');
 
     // メインタスク一覧画面 {goal} はidが動的に入る。
+        // Livewireならではの挙動。クラスを指定するだけで、以下の処理を自動でやってくれる。
+    // 1. コンポーネントの初期化 (mount)
+    // 2. 画面の描画 (render)
+    // 3. レイアウトファイル(app.blade.php)への埋め込み
     Route::get('/goals/{goal}/main-tasks', MainTasksIndex::class)->name('goals.main-tasks');
 });
 
