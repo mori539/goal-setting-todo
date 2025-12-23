@@ -165,12 +165,14 @@
                     </p>
                 </div>
                 @endforelse
+
+                {{-- ページネーション --}}
+                <div class="mt-[20px]">
+                    {{ $mainTasks->links() }}
+                </div>
+
             </div>
 
-            {{-- ページネーション --}}
-            <div class="mt-[20px]">
-                {{ $mainTasks->links() }}
-            </div>
         </div>
     </div>
 </div>

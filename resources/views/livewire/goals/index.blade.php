@@ -113,13 +113,13 @@
                     </p>
                 </div>
                 @endforelse
+
+                {{-- ページネーション --}}
+                <div class="mt-[20px]">
+                    {{ $goals->links() }}
+                </div>
+
             </div>
-
-        </div>
-
-        {{-- ページネーション --}}
-        <div class="mt-[20px]">
-            {{ $goals->links() }}
         </div>
 
     </div>

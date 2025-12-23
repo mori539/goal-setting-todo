@@ -89,8 +89,9 @@
                     wire:blur="updateMemo"                                                                          {{-- フォーカスアウトした際に updateMemo()の処理が実行される --}}
                     @blur="isEditingMemo = false"                                                                   {{-- フォーカスアウトした際にメモ編集フラグをオフにする --}}
                     @keydown.escape.prevent="isEditingMemo = false; $wire.resetMemo()"                              {{-- Escキーを押した際に編集フラグをオフにし、resetMemo()でメモをもとに戻す --}}
+                    @keydown.ctrl.enter="$event.target.blur()"                                                      {{-- Ctrl+Enterを押した際にフォーカスアウトする --}}
                     class="textarea textarea-bordered textarea-sm w-full h-24 text-sm leading-normal focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
-                    placeholder="メモを入力..."
+                    placeholder="メモを入力(Ctrl + Enter で保存)"
                 ></textarea>
             </div>
             {{-- エラー通知 --}}

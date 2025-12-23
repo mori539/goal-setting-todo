@@ -92,6 +92,22 @@ class Index extends Component
         }
     }
 
+    // MainTaskItemコンポーネントで更新・削除が行われたら実行されるリスナー
+    #[On('goal-updated')]
+    public function refreshGoalList()
+    {
+        // データベースから最新のGoal情報（リレーション含む）を再読み込み
+        // タスク側だけ更新しても、親である $this->goal は古い情報のまま（キャッシュされた状態）になっている。
+        // 特に期限日変更時など、即座に画面へ反映させるために refresh() でDBから最新情報を再取得して同期させる。
+        // (以前、Flatpickr編集時に反映されない事象があったため、この処理を追加した)
+        // $this->goal->refresh();
+
+        // 解説:
+        // このメソッドの中身は空でOK。
+        // Livewireは「メソッドが呼ばれる」→「render()が再実行される」という仕様のため、
+        // 単にここを通るだけで、自動的にDBから最新データを取得しなおして画面が更新される。
+    }
+
     // GoalItemコンポーネントで削除が行われたら実行される
     #[On('goal-deleted')]
     public function refreshGoalsList()

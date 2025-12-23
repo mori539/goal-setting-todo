@@ -9,7 +9,7 @@
         type="checkbox"
         wire:click="toggleCompletion"
         @checked($subTask->completed_at)
-        class="checkbox checkbox-xs checkbox-success rounded-full mt-1.5"
+        class="checkbox checkbox-xs checkbox-success rounded-full"
     />
 
     {{-- タイトル、メモエリア --}}
@@ -54,7 +54,7 @@
                     {!! nl2br(e($subTask->memo)) !!}
                 @else
                     {{-- 存在しない場合は入力欄をわかりやすく表示 --}}
-                    <span class="opacity-30 hover:opacity-100 text-gray-800">メモを入力...</span>
+                    <span class="opacity-60 hover:opacity-100 text-gray-500">メモを入力...</span>
                 @endif
             </div>
 
@@ -66,8 +66,9 @@
                 wire:model="editingMemo"                        {{-- PHP処理側に渡す変数値。 --}}
                 wire:blur="updateMemo"                          {{-- フォーカスアウトした際に updateMemo()の処理が実行される --}}
                 @blur="isEditingSubTaskMemo = false"            {{-- フォーカスアウトした際にメモ編集フラグをオフにする --}}
+                @keydown.ctrl.enter="$event.target.blur()"      {{-- Ctrl+Enterを押した際にフォーカスアウトする --}}
                 class="textarea textarea-bordered textarea-xs w-full h-16 leading-normal focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
-                placeholder="サブタスクのメモ"
+                placeholder="メモを入力(Ctrl + Enter で保存)"
             ></textarea>
         </div>
     </div>
