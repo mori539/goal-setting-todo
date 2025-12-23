@@ -53,6 +53,9 @@ class GoalItem extends Component
             // DB更新
             $this->goal->update(['title' => $this->editingTitle]);
 
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: '目標を更新しました');
+
         } catch (ValidationException $e) {
             // 保存失敗時の処理
 
@@ -80,6 +83,11 @@ class GoalItem extends Component
 
             // 空文字なら NULL に変換して保存
             $dueAt = $this->editingDueAt === '' ? null : $this->editingDueAt;
+
+            // 値に変更がなければ何もしない
+            if ($this->goal->due_at === $this->editingDueAt) {
+                return;
+            }
 
             // 更新処理
             $this->goal->update(['due_at' => $dueAt]);

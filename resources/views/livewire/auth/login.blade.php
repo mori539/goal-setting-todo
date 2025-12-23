@@ -102,7 +102,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" label="{{ __('パスワードを保存する') }}" />
+        <flux:checkbox wire:model="remember" label="{{ __('ログイン状態を維持する') }}" />
 
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full">{{ __('ログイン') }}</flux:button>

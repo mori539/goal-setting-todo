@@ -46,8 +46,16 @@ class MainTaskItem extends Component
             // バリデーション処理
             $this->validateOnly('editingTitle');
 
+            // 値に変更がなければ何もしない
+            if ($this->task->title === $this->editingTitle) {
+                return;
+            }
+
             // タイトルを更新
             $this->task->update(['title' => $this->editingTitle]);
+
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: 'タスクを更新しました');
 
         } catch (ValidationException $e) {
 
@@ -68,8 +76,17 @@ class MainTaskItem extends Component
             // バリデーション処理
             $this->validateOnly('editingMemo');
 
+            // 値に変更がなければ何もしない
+            // （バリデーションの兼ね合いもあるため、DBのNullは空文字に変換してから比較）
+            if (($this->task->memo ?: '') === $this->editingMemo) {
+                return;
+            }
+
             // メインタスク メモ更新
             $this->task->update(['memo' => $this->editingMemo ?: null]);
+
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: 'メモを更新しました');
 
          } catch (ValidationException $e) {
 
@@ -88,6 +105,11 @@ class MainTaskItem extends Component
         try{
             // バリデーション処理
             $this->validateOnly('editingDueAt');
+
+            // 値に変更がなければ何もしない
+            if ($this->task->due_at === $this->editingDueAt) {
+                return;
+            }
 
             // 期限日時更新
             $this->task->update(['due_at' => $this->editingDueAt ?: null]);

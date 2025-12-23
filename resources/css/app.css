@@ -64,6 +64,7 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+/* LiveWireで使用する。インライン編集を実現するために表示モードと編集モードの切り替えに使用 */
 [x-cloak] { display: none !important; }
 
 /* スクロール出現時のがたつきを無くす */

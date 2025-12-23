@@ -1,5 +1,5 @@
 <div
-    {{-- {{-- alpain.jsで使用する変数を定義 --}}
+    {{-- alpain.jsで使用する変数を定義 --}}
     x-data="{
         isEditingTitle: false,
         isEditingMemo: false,
@@ -99,11 +99,14 @@
             {{-- 日付情報 --}}
             <div class="text-xs text-gray-500 flex flex-wrap gap-2 items-center mt-1">
 
-                 {{-- 作成日時（date-label.blade.phpのコンポーネントを使用している） --}}
+                {{-- 作成日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="作成" :date="$task->created_at" />
 
                 {{-- 期限日時 --}}
                 <div class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
                     <span class="text-gray-500 shrink-0">期限:</span> {{-- shrink-0: 縮こまらないように固定 --}}
 
                     <div class="w-[85px]">
@@ -117,7 +120,7 @@
                     </div>
                 </div>
 
-                 {{-- 完了日時（date-label.blade.phpのコンポーネントを使用している） --}}
+                {{-- 完了日時（date-label.blade.phpのコンポーネントを使用している） --}}
                 <x-date-label label="完了" :date="$task->completed_at" />
             </div>
         </div>
@@ -158,7 +161,7 @@
         </div>
     </div>
 
-    {{-- ▼▼▼ 修正：アニメーション付き進捗バー ▼▼▼ --}}
+    {{-- 修正：アニメーション付き進捗バー --}}
     @if($task->subTasks->count() > 0)
         @php
             $progress = $task->progress;
@@ -183,7 +186,7 @@
                         style="width: {{ $progress }}%"
                     ></div>
                 </div>
-                {{-- 数字表示（お好みで） --}}
+                {{-- 数字表示 --}}
                 <span class="text-[10px] font-bold whitespace-nowrap {{ $textColorClass }} w-8 text-right">
                     {{ $progress }}%
                 </span>
@@ -192,7 +195,7 @@
     @endif
 
 
-    {{-- ▼▼▼ 修正：サブタスク一覧エリア（開閉式） ▼▼▼ --}}
+    {{-- 修正：サブタスク一覧エリア（開閉式） --}}
     {{-- x-show="showSubTasks" で開閉を制御 --}}
     <div x-show="showSubTasks" x-cloak class="mt-4 pl-8 border-l-2 border-gray-100 space-y-2">
 
@@ -204,8 +207,9 @@
         </div>
 
         {{-- サブタスク追加フォーム --}}
+        {{-- 表示モード --}}
         <div
-            x-show="!isEditingSubTask"
+            x-show="!isEditingSubTask"      {{-- サブタスク編集フラグがfalseの際にこのdiv要素が表示される --}}
             @click="isEditingSubTask = true; $nextTick(() => $refs.subTaskInput.focus())"
             class="cursor-text group min-h-[1.5rem] mt-2"
         >
@@ -217,13 +221,14 @@
             </div>
         </div>
 
+        {{-- 編集モード --}}
         <input
-            x-show="isEditingSubTask"
-            x-cloak
-            x-ref="subTaskInput"
-            wire:model="newSubTaskTitle"
-            wire:keydown.enter="storeSubTask"
-            @blur="isEditingSubTask = false"
+            x-show="isEditingSubTask"                               {{-- サブタスク編集フラグがtrueの際にこのinput要素が表示される --}}
+            x-cloak                                                 {{-- app.cssに定義。display:noneしている --}}
+            x-ref="subTaskInput"                                    {{-- $refs.subTaskInput.focus()の関係先。 --}}
+            wire:model="newSubTaskTitle"                            {{-- PHP処理側に渡す変数値。 --}}
+            wire:keydown.enter="storeSubTask"                       {{-- フォーカスアウトした際に storeSubTask()の処理が実行される --}}
+            @blur="isEditingSubTask = false"                        {{-- フォーカスアウトした際にサブタスク編集フラグをオフにする --}}
             type="text"
             placeholder="サブタスクを追加 (Enterで保存)"
             class="input input-sm input-bordered w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
