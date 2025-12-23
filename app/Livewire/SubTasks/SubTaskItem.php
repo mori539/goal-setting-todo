@@ -45,7 +45,7 @@ class SubTaskItem extends Component
             $this->subTask->update(['title' => $this->editingTitle]);
 
             // トーストで更新通知をする
-            $this->dispatch('notify', message: '目標を更新しました');
+            $this->dispatch('notify', message: 'サブタスクを更新しました');
 
         } catch (ValidationException $e) {
 
@@ -75,6 +75,9 @@ class SubTaskItem extends Component
 
             // メモ更新
             $this->subTask->update(['memo' => $this->editingMemo ?: null]);
+
+            // トーストで更新通知をする
+            $this->dispatch('notify', message: 'メモを更新しました');
 
         } catch (ValidationException $e) {
 
