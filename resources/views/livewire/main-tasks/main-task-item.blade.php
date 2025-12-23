@@ -31,7 +31,7 @@
                 <h3
                     x-show="!isEditingTitle"    {{-- タイトル編集フラグがfalseの際にこのinput要素が表示される --}}
                     @click="isEditingTitle = true; $nextTick(() => $refs.titleInput.focus())"   {{-- クリックした際にタイトル編集フラグをtrueにする。その後編集モードへ移行。 --}}
-                    class="text-lg font-bold text-gray-800 hover:bg-gray-100 rounded px-1 -ml-1 transition-colors break-words cursor-text {{ $task->completed_at ? 'line-through text-gray-400' : '' }}"
+                    class="text-lg font-bold text-gray-800 hover:bg-blue-100 rounded px-1 -ml-1 transition-colors break-words cursor-text {{ $task->completed_at ? 'line-through text-gray-400' : '' }}"
                 >
                     {{ $task->title }}
                 </h3>
@@ -65,13 +65,13 @@
 
                     @if($task->memo)
                     {{-- 保存値がある場合は保存値を表示 --}}
-                    <p class="text-sm text-gray-700 bg-gray-50 p-2 rounded hover:bg-gray-100 transition-colors {{ $task->completed_at ? 'opacity-50' : '' }}">
+                    <p class="text-sm text-gray-700 bg-gray-50 p-2 rounded hover:bg-blue-100 transition-colors {{ $task->completed_at ? 'opacity-50' : '' }}">
                         {!! nl2br(e($task->memo)) !!}
 
                     </p>
                     @else
                     {{-- 保存値がない場合は「+メモを追加」テキストを表示 --}}
-                    <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
+                    <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 hover:bg-blue-50 rounded-sm transition-opacity p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -115,7 +115,7 @@
                         <x-date-picker
                             wire:model.live="editingDueAt"
                             placeholder="---"
-                            class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-gray-100 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
+                            class="input input-ghost input-sm h-5 px-0 py-0 text-xs leading-none text-gray-500 hover:bg-blue-100 focus:bg-white focus:text-gray-900 w-full focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                         />
                     </div>
                 </div>
@@ -211,7 +211,7 @@
         <div
             x-show="!isEditingSubTask"      {{-- サブタスク編集フラグがfalseの際にこのdiv要素が表示される --}}
             @click="isEditingSubTask = true; $nextTick(() => $refs.subTaskInput.focus())"
-            class="cursor-text group min-h-[1.5rem] mt-2"
+            class="cursor-text group min-h-[1.5rem] mt-2 hover:bg-gray-100 rounded-sm"
         >
             <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">

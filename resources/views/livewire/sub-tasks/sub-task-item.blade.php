@@ -47,14 +47,14 @@
             <div
                 x-show="!isEditingSubTaskMemo"          {{-- メモ編集フラグがfalseの際にこのinput要素が表示される --}}
                 @click="isEditingSubTaskMemo = true; $nextTick(() => $refs.memoInput.focus())"
-                class="text-xs text-gray-800 hover:bg-gray-50 rounded pl-5 -ml-1 cursor-text min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
+                class="text-xs text-gray-800 hover:bg-gray-100 rounded pl-5 -ml-1 cursor-text min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
             >
                 @if($subTask->memo)
                     {{-- メモが存在した場合はDB保存値を表示 --}}
                     {!! nl2br(e($subTask->memo)) !!}
                 @else
                     {{-- 存在しない場合は入力欄をわかりやすく表示 --}}
-                    <span class="opacity-20 hover:opacity-100 text-gray-800">メモを入力...</span>
+                    <span class="opacity-30 hover:opacity-100 text-gray-800">メモを入力...</span>
                 @endif
             </div>
 
