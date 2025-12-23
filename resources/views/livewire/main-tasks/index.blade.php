@@ -134,7 +134,7 @@
                 </h3>
 
                 {{-- ソート選択プルダウン --}}
-                <select wire:model.live="sort" class="select select-bordered select-sm w-full sm:w-auto">
+                <select wire:model.live="sort" class="select select-bordered select-sm w-full sm:w-auto focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded">
                     <option value="created_desc">作成日が新しい順</option>
                     <option value="created_asc">作成日が古い順</option>
                     <option value="due_asc">期限が近い順</option>

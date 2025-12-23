@@ -54,7 +54,7 @@
                     {!! nl2br(e($subTask->memo)) !!}
                 @else
                     {{-- 存在しない場合は入力欄をわかりやすく表示 --}}
-                    <span class="opacity-0 hover:opacity-100 text-gray-800">メモを入力...</span>
+                    <span class="opacity-20 hover:opacity-100 text-gray-800">メモを入力...</span>
                 @endif
             </div>
 

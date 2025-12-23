@@ -20,7 +20,13 @@
         {{-- 目標検索ボックス --}}
         @if($mode === 'goal')
             {{-- Goal画面: リアルタイム検索 --}}
-            <label class="input input-bordered input-sm flex items-center gap-2 mb-4">
+            <label class="input input-bordered input-sm flex items-center gap-2 mb-4
+                          focus-within:outline-none
+                          focus-within:border-blue-500
+                          focus-within:ring-2
+                          focus-within:ring-blue-500/50
+                          focus-within:ring-offset-1
+                          rounded">
                 {{-- wire:model.live.debounce.300ms="search" -> ユーザーがタイピングを止めてから 300ミリ秒経過した時だけ サーバーにデータを送信して検索する --}}
                 <input wire:model.live.debounce.300ms="search" type="text" class="grow" placeholder="検索..." />
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" /></svg>
@@ -29,7 +35,13 @@
             {{-- Task画面: 目標一覧へ検索しにいくフォーム --}}
             {{-- 検索文字列でWHEREした状態で目標一覧へ遷移 --}}
             <form action="{{ route('goals.index') }}" method="GET" class="mb-4">
-                <label class="input input-bordered input-sm flex items-center gap-2">
+                <label class="input input-bordered input-sm flex items-center gap-2
+                          focus-within:outline-none
+                          focus-within:border-blue-500
+                          focus-within:ring-2
+                          focus-within:ring-blue-500/50
+                          focus-within:ring-offset-1
+                          rounded">
                     <input name="search" type="text" class="grow" placeholder="検索..." />
                     <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" /></svg></button>
                 </label>
@@ -78,7 +90,13 @@
         </div>
 
         {{-- タスク検索ボックス（リアルタイム検索） --}}
-        <label class="input input-bordered input-sm flex items-center gap-2 mb-4">
+        <label class="input input-bordered input-sm flex items-center gap-2 mb-4
+                          focus-within:outline-none
+                          focus-within:border-blue-500
+                          focus-within:ring-2
+                          focus-within:ring-blue-500/50
+                          focus-within:ring-offset-1
+                          rounded">
             {{-- wire:model.live.debounce.300ms="search" -> ユーザーがタイピングを止めてから 300ミリ秒経過した時だけ サーバーにデータを送信して検索する --}}
             <input wire:model.live.debounce.300ms="search" type="text" class="grow" placeholder="現在の目標内..." />
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" /></svg>
