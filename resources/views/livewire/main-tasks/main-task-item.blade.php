@@ -197,7 +197,12 @@
 
     {{-- 修正：サブタスク一覧エリア（開閉式） --}}
     {{-- x-show="showSubTasks" で開閉を制御 --}}
-    <div x-show="showSubTasks" x-cloak class="mt-4 pl-8 border-l-2 border-gray-100 space-y-2">
+    <div
+        x-show="showSubTasks"           {{-- サブタスク表示フラグがオンになったら表示（サブタスク開閉ボタンと連動） --}}
+        x-collapse                      {{-- 開閉にアニメーションを付ける --}}
+        x-cloak                         {{-- app.cssに定義。display:noneしている --}}
+        class="mt-4 pl-8 border-l-2 border-gray-100 space-y-2"
+    >
 
         {{-- サブタスク一覧 --}}
         <div class="flex flex-col gap-1">
