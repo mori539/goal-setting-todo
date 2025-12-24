@@ -12,6 +12,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Index extends Component
 {
@@ -199,4 +200,94 @@ class Index extends Component
     {
         $this->resetPage();
     }
+
+
+    // ユーザーに紐づく目標・タスク・サブタスクのCSVダウンロード
+    public function exportAllDataCsv(): StreamedResponse
+    {
+        // ファイル名
+        $fileName = 'all_data_' . now()->format('Y-m-d') . '.csv';
+
+        // streamDownloadを使用することで、少しずつファイルを作ってブラウザに渡すことができる
+        return response()->streamDownload(function () {
+
+            // 出力用のバッファを開く
+            $handle = fopen('php://output', 'w');
+
+            // 文字化け対策（BOM付気にする）
+            fputs($handle, "\xEF\xBB\xBF");
+
+            // ヘッダー行
+            fputcsv($handle, [
+                '目標ID', '目標タイトル', '目標期限','目標完了日時',            //目標
+                'タスクID', 'タスクタイトル', 'タスク期限','タスク完了日時',    //タスク
+                'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'      //サブタスク
+            ]);
+
+            // データの取得
+            // Goalを親として、子供(mainTasks)と孫(subTasks)を道連れにして取得
+            $goals = Goal::query()
+                ->where('user_id', Auth::id())
+                ->with(['mainTasks.subTasks'])  // 孫まで一気に取得
+                ->lazyById(200);                //getだといっぺんにすべて取得するためメモリを食う。lazyById(200)にすることで200件ずつ取得してメモリ消費を抑える。
+
+            // データを平坦化して書き込み（3重ループ）
+            foreach ($goals as $goal) {
+                // 無駄なループ処理をしないために、タスクの有無、サブタスクの有無で処理を分岐させる。
+
+                // 目標に紐づくタスクが1つもない場合
+                if ($goal->mainTasks->isEmpty()) {
+                    // 目標の情報だけ書いて、タスク以降は空欄にする
+                    fputcsv($handle, [
+                        // '目標ID', '目標タイトル', '目標期限','目標完了日時',
+                        $goal->id, $goal->title, $goal->due_at?->format('Y-m-d')?? '', $goal->completed_at?->format('Y-m-d')?? '',
+
+                        // 'タスクID', 'タスクタイトル', 'タスク期限','タスク完了日時',
+                        '', '', '', '', // タスク情報なし
+
+                        // 'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'
+                        '', '', '', // サブタスク情報なし
+                    ]);
+                    continue; // 次の目標へ
+                }
+
+                // 目標に紐づくタスクあり
+                foreach ($goal->mainTasks as $task) {
+
+                    // タスクはあるけど、サブタスクがない場合
+                    if ($task->subTasks->isEmpty()) {
+                        fputcsv($handle, [
+                            // '目標ID', '目標タイトル', '目標期限','目標完了日時',
+                            $goal->id, $goal->title, $goal->due_at?->format('Y-m-d')?? '', $goal->completed_at?->format('Y-m-d')?? '',
+
+                            // 'タスクID', 'タスクタイトル', 'タスク期限','タスク完了日時',
+                            $task->id, $task->title, $task->due_at?->format('Y-m-d')?? '', $task->completed_at?->format('Y-m-d')?? '',
+
+                            // 'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'
+                            '', '', '', // サブタスク情報なし
+                        ]);
+                        continue; // 次のタスクへ
+                    }
+
+                    // サブタスクまである場合
+                    foreach ($task->subTasks as $subTask) {
+                        fputcsv($handle, [
+                            // '目標ID', '目標タイトル', '目標期限','目標完了日時',
+                            $goal->id, $goal->title, $goal->due_at?->format('Y-m-d')?? '', $goal->completed_at?->format('Y-m-d')?? '',
+
+                            // 'タスクID', 'タスクタイトル', 'タスク期限','タスク完了日時',
+                            $task->id, $task->title, $task->due_at?->format('Y-m-d')?? '', $task->completed_at?->format('Y-m-d')?? '',
+
+                            // 'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'
+                            $subTask->id, $subTask->title,  $subTask->completed_at?->format('Y-m-d')?? '',
+                        ]);
+                    }
+                }
+            }
+
+            // ファイルを閉じる
+            fclose($handle);
+        }, $fileName);
+    }
+
 }

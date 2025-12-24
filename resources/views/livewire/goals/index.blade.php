@@ -8,6 +8,24 @@
         {{-- メインコンテンツ --}}
         <div class="flex-1">
 
+            <div class="grid grid-flow-col justify-items-end">
+                {{-- 右側：CSVダウンロードボタン --}}
+                <button
+                    wire:click="exportAllDataCsv"
+                    wire:loading.attr="disabled" {{-- 処理中はボタンを無効化 --}}
+                    class="btn btn-sm btn-outline gap-2 mb-5"
+                >
+                    {{-- アイコン（Heroicons） --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mb-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    <span>CSV出力</span>
+
+                    {{-- ローディング中だけ表示されるスピナー --}}
+                    <span wire:loading wire:target="exportCsv" class="loading loading-spinner loading-xs"></span>
+                </button>
+            </div>
+
             {{-- ソート --}}
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h2 class="text-2xl font-bold text-gray-800">
