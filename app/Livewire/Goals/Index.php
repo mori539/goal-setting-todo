@@ -145,7 +145,7 @@ class Index extends Component
             // フィルター：未完了期限切れ（未完了 かつ 期限が今日よりも過去）
             return $q->whereNull('completed_at')
                      ->whereNotNull('due_at')
-                     ->where('due_at', '<', now());
+                     ->where('due_at', '<', now()->startOfDay());
         });
 
         $query->when($this->filter === 'due_soon', function ($q) {
