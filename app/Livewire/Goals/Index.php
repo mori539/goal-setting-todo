@@ -243,10 +243,10 @@ class Index extends Component
                         $goal->id, $goal->title, $goal->due_at?->format('Y-m-d')?? '', $goal->completed_at?->format('Y-m-d')?? '',
 
                         // 'タスクID', 'タスクタイトル', 'タスク期限','タスク完了日時',
-                        '', '', '', '', // タスク情報なし
+                        'ーーー', 'ーーー', 'ーーー', 'ーーー', // タスク情報なし
 
                         // 'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'
-                        '', '', '', // サブタスク情報なし
+                        'ーーー', 'ーーー', 'ーーー', // サブタスク情報なし
                     ]);
                     continue; // 次の目標へ
                 }
@@ -264,7 +264,7 @@ class Index extends Component
                             $task->id, $task->title, $task->due_at?->format('Y-m-d')?? '', $task->completed_at?->format('Y-m-d')?? '',
 
                             // 'サブタスクID', 'サブタスクタイトル', 'サブタスク完了日時'
-                            '', '', '', // サブタスク情報なし
+                            'ーーー', 'ーーー', 'ーーー', // サブタスク情報なし
                         ]);
                         continue; // 次のタスクへ
                     }

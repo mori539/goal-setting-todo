@@ -25,7 +25,7 @@
                 <h3
                     x-show="!isEditing"
                     @click="isEditing = true; $nextTick(() => $refs.titleInput.focus())"
-                    class="border-b border-transparent text-lg font-bold text-gray-800 hover:bg-blue-100 rounded px-1 -ml-1 transition-colors break-words cursor-pointer
+                    class="border-b border-transparent text-lg font-bold text-gray-800 hover:bg-yellow-200 rounded px-1 -ml-1 transition-colors break-words cursor-pointer
                         {{ $goal->completed_at ? 'line-through text-gray-400' : '' }}"
                 >
                     {{ $goal->title }}
