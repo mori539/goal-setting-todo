@@ -9,7 +9,7 @@
         type="checkbox"
         wire:click="toggleCompletion"
         @checked($subTask->completed_at)
-        class="checkbox checkbox-xs checkbox-success rounded-full"
+        class="checkbox checkbox-xs checkbox-success rounded-full mt-1"
     />
 
     {{-- タイトル、メモエリア --}}
@@ -20,7 +20,7 @@
             <div
                 x-show="!isEditingSubTaskTitle"         {{-- タイトル編集フラグがfalseの際にこのinput要素が表示される --}}
                 @click="isEditingSubTaskTitle = true; $nextTick(() => $refs.titleInput.focus())"
-                class="text-sm text-gray-700 hover:bg-gray-100 rounded px-1 -ml-1 cursor-text break-words {{ $subTask->completed_at ? 'line-through text-gray-400' : '' }}"
+                class="h-auto border-b border-transparent text-sm text-gray-700 cursor-pointer hover:bg-gray-100 rounded px-1 py-1 -ml-1 break-words {{ $subTask->completed_at ? 'line-through text-gray-400' : '' }}"
             >
                 {{ $subTask->title }}
             </div>
@@ -35,7 +35,7 @@
                 @blur="isEditingSubTaskTitle = false"               {{-- フォーカスアウトした際にタイトル編集フラグをオフにする --}}
                 @keydown.enter.prevent="$event.target.blur()"       {{-- エンターキーを押した際にフォーカスアウトする --}}
                 type="text"
-                class="input input-xs input-ghost w-full text-sm px-1 -ml-1 h-auto focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
+                class="w-full text-sm px-1 py-1 -ml-1 h-auto bg-white border-b border-blue-400 focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
             />
         </div>
         {{-- エラー通知 --}}
@@ -47,7 +47,7 @@
             <div
                 x-show="!isEditingSubTaskMemo"          {{-- メモ編集フラグがfalseの際にこのinput要素が表示される --}}
                 @click="isEditingSubTaskMemo = true; $nextTick(() => $refs.memoInput.focus())"
-                class="text-xs text-gray-800 hover:bg-gray-100 rounded pl-5 -ml-1 cursor-text min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
+                class="text-xs text-gray-800 hover:bg-gray-100 rounded pl-5 py-1 -ml-1 cursor-pointer min-h-[1.5rem] {{ $subTask->completed_at ? 'opacity-50' : '' }}"
             >
                 @if($subTask->memo)
                     {{-- メモが存在した場合はDB保存値を表示 --}}
@@ -67,6 +67,7 @@
                 wire:blur="updateMemo"                          {{-- フォーカスアウトした際に updateMemo()の処理が実行される --}}
                 @blur="isEditingSubTaskMemo = false"            {{-- フォーカスアウトした際にメモ編集フラグをオフにする --}}
                 @keydown.ctrl.enter="$event.target.blur()"      {{-- Ctrl+Enterを押した際にフォーカスアウトする --}}
+                @keydown.meta.enter="$event.target.blur()"      {{-- Command+Enterを押した際にフォーカスアウトする（Mac用） --}}
                 class="textarea textarea-bordered textarea-xs w-full h-16 leading-normal focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 placeholder="メモを入力(Ctrl + Enter で保存)"
             ></textarea>

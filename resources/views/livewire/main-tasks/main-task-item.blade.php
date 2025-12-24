@@ -18,7 +18,7 @@
             type="checkbox"
             wire:click="toggleCompletion"
             @checked($task->completed_at)
-            class="checkbox checkbox-success checkbox-md rounded-full mt-1 border-2 border-gray-400"
+            class="checkbox checkbox-success checkbox-md rounded-full mt-0.5 border-2 border-gray-400"
         />
 
         {{-- 真ん中のエリア --}}
@@ -31,7 +31,7 @@
                 <h3
                     x-show="!isEditingTitle"    {{-- タイトル編集フラグがfalseの際にこのinput要素が表示される --}}
                     @click="isEditingTitle = true; $nextTick(() => $refs.titleInput.focus())"   {{-- クリックした際にタイトル編集フラグをtrueにする。その後編集モードへ移行。 --}}
-                    class="text-lg font-bold text-gray-800 hover:bg-blue-100 rounded px-1 -ml-1 transition-colors break-words cursor-text {{ $task->completed_at ? 'line-through text-gray-400' : '' }}"
+                    class="border-b border-transparent text-lg font-bold text-gray-800 hover:bg-blue-100 rounded px-1 -ml-1 transition-colors break-words cursor-pointer {{ $task->completed_at ? 'line-through text-gray-400' : '' }}"
                 >
                     {{ $task->title }}
                 </h3>
@@ -47,7 +47,7 @@
                     @keydown.enter.prevent="$event.target.blur()"                                                       {{-- エンターキーを押した際にフォーカスアウトする --}}
                     @keydown.escape.prevent="isEditingTitle = false; $wire.resetTitle()"                                {{-- Escキーを押した際に編集フラグをオフにし、resetTitle()でメインタスクタイトルをもとに戻す --}}
                     type="text"
-                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 focus:bg-white border-b border-blue-400 rounded-sm h-auto focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
+                    class="w-full text-lg font-bold text-gray-800 px-1 -ml-1 bg-white border-b border-blue-400 rounded-sm h-auto focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
             </div>
             {{-- エラー通知 --}}
@@ -59,7 +59,7 @@
                 <div
                     x-show="!isEditingMemo"     {{-- メモ編集フラグがfalseの際にこのinput要素が表示される --}}
                     @click="isEditingMemo = true; $nextTick(() => $refs.memoInput.focus())"     {{-- クリックした際にタイトル編集フラグをtrueにする。その後編集モードへ移行。 --}}
-                    class="cursor-text group min-h-[1.5rem]"
+                    class="cursor-pointer group min-h-[1.5rem]"
                 >
 
 
@@ -90,7 +90,7 @@
                     @blur="isEditingMemo = false"                                                                   {{-- フォーカスアウトした際にメモ編集フラグをオフにする --}}
                     @keydown.escape.prevent="isEditingMemo = false; $wire.resetMemo()"                              {{-- Escキーを押した際に編集フラグをオフにし、resetMemo()でメモをもとに戻す --}}
                     @keydown.ctrl.enter="$event.target.blur()"                                                      {{-- Ctrl+Enterを押した際にフォーカスアウトする --}}
-                    class="textarea textarea-bordered textarea-sm w-full h-24 text-sm leading-normal focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
+                    class="textarea textarea-bordered textarea-md w-full h-24 text-sm leading-normal focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                     placeholder="メモを入力(Ctrl + Enter で保存)"
                 ></textarea>
             </div>
@@ -162,37 +162,16 @@
         </div>
     </div>
 
-    {{-- 修正：アニメーション付き進捗バー --}}
+    {{-- 進捗バー --}}
     @if($task->subTasks->count() > 0)
-        @php
-            $progress = $task->progress;
-            $colorClass = match(true) {
-                $progress < 35 => 'bg-warning',
-                $progress < 75 => 'bg-info',
-                default => 'bg-success',
-            };
-            $textColorClass = match(true) {
-                $progress < 35 => 'text-orange-500',
-                $progress < 75 => 'text-blue-500',
-                default => 'text-green-600',
-            };
-        @endphp
-
-        <div class="mt-3 px-1">
-            {{-- <progress> ではなく 2つのdivで実装 --}}
-            <div class="flex items-center gap-2 w-9/10">
-                <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                    <div
-                        class="h-full rounded-full transition-all duration-500 ease-out {{ $colorClass }}"
-                        style="width: {{ $progress }}%"
-                    ></div>
-                </div>
-                {{-- 数字表示 --}}
-                <span class="text-[10px] font-bold whitespace-nowrap {{ $textColorClass }} w-8 text-right">
-                    {{ $progress }}%
-                </span>
-            </div>
-        </div>
+        <x-progress-bar
+            {{-- 変数やboolean等、型や中身を渡したい場合は「:」を付ける。（付けるとPHPのプログラムとして渡す） --}}
+            {{-- 値を文字列として渡したい場合は「:」を付けない。 --}}
+            :progress="$task->progress"
+            height="h-1.5"
+            text-size="text-[10px]"
+            :show-label="false"
+        />
     @endif
 
 
@@ -217,7 +196,7 @@
         <div
             x-show="!isEditingSubTask"      {{-- サブタスク編集フラグがfalseの際にこのdiv要素が表示される --}}
             @click="isEditingSubTask = true; $nextTick(() => $refs.subTaskInput.focus())"
-            class="cursor-text group min-h-[1.5rem] mt-2 hover:bg-gray-100 rounded-sm"
+            class="cursor-pointer group min-h-[1.5rem] mt-2 hover:bg-gray-100 rounded-sm"
         >
             <div class="text-xs text-gray-500 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">

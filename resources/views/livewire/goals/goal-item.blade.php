@@ -25,7 +25,7 @@
                 <h3
                     x-show="!isEditing"
                     @click="isEditing = true; $nextTick(() => $refs.titleInput.focus())"
-                    class="text-lg font-bold text-gray-800 cursor-pointer hover:bg-yellow-200 rounded px-1 -ml-1 transition-colors break-words
+                    class="border-b border-transparent text-lg font-bold text-gray-800 hover:bg-blue-100 rounded px-1 -ml-1 transition-colors break-words cursor-pointer
                         {{ $goal->completed_at ? 'line-through text-gray-400' : '' }}"
                 >
                     {{ $goal->title }}
@@ -42,7 +42,7 @@
                     @keydown.enter.prevent="$event.target.blur()"                       {{-- エンターキーを押した際にフォーカスアウトする --}}
                     @keydown.escape.prevent="isEditing = false; $wire.resetTitle()"     {{-- Escキーを押した際に編集フラグをオフにし、resetTitle()で目標タイトルをもとに戻す --}}
                     type="text"
-                    class="input input-sm input-ghost w-full text-lg font-bold text-gray-800 px-1 -ml-1 h-auto focus:bg-white focus:outline-none focus:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
+                    class="w-full text-lg font-bold text-gray-800 px-1 -ml-1 bg-white border-b border-blue-400 rounded-sm h-auto focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 rounded"
                 />
             </div>
             @error('editingTitle') <span class="text-error text-xs">{{ $message }}</span> @enderror
@@ -108,42 +108,5 @@
     </div>
 
         {{-- 進捗バー（目標の全体進捗） --}}
-        @php
-            // 進捗率を取得
-            $progress = $goal->progress;
-
-            // 色の決定ロジック（daisyUIのクラスを切り替え）
-            // 0-34%: warning (オレンジ/黄色系)
-            // 35-74%: info (青系)
-            // 75-100%: success (緑)
-            $colorClass = match(true) {
-                $progress < 35 => 'bg-warning',
-                $progress < 75 => 'bg-info',
-                default => 'bg-success',
-            };
-
-            // テキストの色も合わせる
-            $textColorClass = match(true) {
-                $progress < 35 => 'text-orange-500',
-                $progress < 75 => 'text-blue-500',
-                default => 'text-green-600',
-            };
-        @endphp
-
-        <div class="mt-3 px-1">
-            {{-- <progress> ではなく 2つのdivで実装 --}}
-            <div class="flex items-center gap-2 w-9/10">
-                <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                    <div
-                        class="h-full rounded-full transition-all duration-500 ease-out {{ $colorClass }}"
-                        style="width: {{ $progress }}%"
-                    ></div>
-                </div>
-                {{-- 数字表示 --}}
-                <span class="text-[12px] font-bold whitespace-nowrap {{ $textColorClass }} w-8 text-right">
-                    {{ $progress }}%完了
-                </span>
-            </div>
-        </div>
-
+        <x-progress-bar :progress="$goal->progress" />
 </div>

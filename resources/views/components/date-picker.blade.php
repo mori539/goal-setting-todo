@@ -99,6 +99,6 @@
         x-ref="input" {{-- Flatpickrがターゲットにするための目印 --}}
         type="text"
         placeholder="{{ $placeholder }}"
-        {{ $attributes->merge(['class' => 'input input-bordered w-full bg-white']) }}
+        {{ $attributes->merge(['class' => 'input input-bordered w-full bg-white cursor-pointer']) }}
     />
 </div>
